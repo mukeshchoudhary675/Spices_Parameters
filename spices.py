@@ -35,6 +35,10 @@ if uploaded_file:
     st.subheader("📄 Cleaned Data")
     st.dataframe(df)
 
+    # Convert numeric columns safely
+    df["No. of Samples tested"] = pd.to_numeric(df["No. of Samples tested"], errors="coerce")
+    df["No. of Non-compliant Samples"] = pd.to_numeric(df["No. of Non-compliant Samples"], errors="coerce")
+    
     # Summary: Total Samples & Non-Compliant by Group
     st.subheader("📊 Summary by Group")
     df_summary = df.groupby("Group", as_index=False).agg({
@@ -44,8 +48,9 @@ if uploaded_file:
     df_summary["% Non-compliance"] = (
         df_summary["No. of Non-compliant Samples"] / df_summary["No. of Samples tested"]
     ).round(4)
-
+    
     st.dataframe(df_summary)
+
 
     # Download cleaned file
     st.download_button("⬇️ Download Cleaned Data",
